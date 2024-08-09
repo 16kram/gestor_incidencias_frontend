@@ -1,0 +1,64 @@
+#en_linea {
+    display: none;
+    /*oculta el aviso de 'en línea'*/
+}
+
+#listado {
+    display: none;
+    /*Oculta el listado de incidencias*/
+}
+
+#tabla_incidencias {
+    text-align: center;
+    /*Centramos el texto*/
+}
+
+.contenedor {
+    width: 100%;
+    /* Ancho del espacio */
+    height: 40vh;
+    /* Altura del espacio */
+    padding: 10px;
+    /* Espacio interno */
+    border: 2px solid #000;
+    /* Borde del contenedor */
+    margin: 20px auto;
+    /* Permitir scroll si la tabla es más grande que el contenedor */
+    overflow: auto;
+}
+
+thead th {
+    text-align: center;
+    /*Centramos el texto*/
+    position: sticky;
+    /* Mantiene el encabezado fijo durante el scroll */
+    top: 0;
+    /* Posiciona el encabezado en la parte superior */
+    background-color: #f8f8f8;
+    /* Fondo para diferenciar el encabezado */
+    z-index: 1;
+    /* Asegura que el encabezado esté encima del contenido */
+}
+
+footer {
+    background-color: #333;
+    /* Fondo oscuro */
+    color: white;
+    /* Texto en blanco */
+    text-align: center;
+    /* Centrar el texto */
+    padding: 10px 0;
+    /* Espaciado interno */
+    position: fixed;
+    /* Fijar en la parte inferior */
+    left: 0;
+    /* Alinear al borde izquierdo */
+    right: 0;
+    /* Alinear al borde derecho */
+    bottom: 0;
+    /* Ubicar al fondo de la ventana */
+    width: 100%;
+    /* Asegurar que ocupe todo el ancho */
+    z-index: 1000;
+    /* Asegurar que esté por encima de otros elementos */
+}
