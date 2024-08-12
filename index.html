@@ -18,7 +18,12 @@
 <body>
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
+           
             <a class="navbar-brand">Control de incidencias del departamento de mantenimiento</a>
+            <div class="d-flex align-items-center mx-auto">
+             <img src="img/icono_admin.png" alt="Icono" width="30" height="30" id="icono_administrador" data-toogle="tooltip" data-placament="top" title="Administrador">
+             <img src="img/icono_listado_incidencias.png" alt="Icono" width="30" height="30" id="icono_incidencias" data-toogle="tooltip" data-placament="top" title="Listado de incidencias">
+            </div>
             <form class="d-flex ms-auto">
                 <span id="en_linea" class="badge rounded-pill text-bg-success">En línea</span>
                 <input id="usuario" class="form-control me-2" type="text" placeholder="Usuario" aria-label="Usuario">
@@ -89,7 +94,7 @@
                         <input type="text" class="form-control" id="departamento">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">planta</label>
+                        <label class="form-label">Planta</label>
                         <select id="planta" class="form-control">
                             <option value="TB -03">TB -03</option>
                             <option value="TB -02">TB -02</option>
@@ -138,11 +143,29 @@
                 <button id="nueva_incidencia" class="btn btn-primary">Nueva incidencia</button>
             </div>
         </div>
-        </br>
+    </div>
+
+    <div id="usuarios">
+    <h5>LISTADO DE USUARIOS</h5>
+    <div class="contenedor">
+        <table id="tabla_usuarios" border="1" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Ciudad</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Rol</th>
+                    <th>Nombre de usuario</th>
+                </tr>
+            </thead>
+            <tbody></tbody> <!--Aquí se añaden las filas nuevas-->
+        </table>
+    </div>
     </div>
 
     <footer>
-        &copy; 2024 Esteban Porqueras Araque.
+        &copy; 2024 Esteban P.A.
     </footer>
 </body>
 

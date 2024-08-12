@@ -34,6 +34,11 @@ function iniciar() {
     var nueva_incidencia = document.getElementById("nueva_incidencia");
     nueva_incidencia.addEventListener("click", crear_incidencia);
 
+    //Iconos de la barra de navegación
+    var icono_administrador = document.getElementById("icono_administrador");
+    icono_administrador.addEventListener("click", listar_usuarios);
+    var icono_listado_incidencias = document.getElementById("icono_incidencias");
+    icono_listado_incidencias.addEventListener("click", listar_incidencias);
 }
 
 //Autenticarse
@@ -63,6 +68,8 @@ function boton_login() {
             jwt = token;
             console.log(jwt.token);
             en_linea.style.display = 'inline';//Se muestra 'en línea'
+            icono_incidencias.style.display = 'block';//Se muestra el icono de listado de incidencias
+            icono_administrador.style.display = 'block';//Se muestra eñ icono de administrador
             listar_incidencias();
         }).catch(e => {
             console.log(e);
@@ -72,6 +79,9 @@ function boton_login() {
 // Listar incidencias
 async function listar_incidencias() {
     console.log("botón listar incidencias");
+    usuarios.style.display = 'none';//Oculta el listado de usuarios 
+    listado.style.display = 'block';//Muestra el listado de incidencias
+
     var datos = [];
     const mi_token = "Bearer " + jwt.token;
     try {
@@ -91,11 +101,11 @@ async function listar_incidencias() {
     }
     datos.reverse();//Se ponen las incidencias más recientes al principio de la tabla
     //Se crea la tabla de incidencias
-    var tbody = document.querySelector("tbody");
+    var tbody = document.querySelector("#tabla_incidencias tbody");
     tbody.innerHTML = ""//Se borran los datos de la tabla
     for (var n = 0; n < datos.length; n++) {
 
-        var newline_tabla = document.querySelector("tbody");
+        var newline_tabla = document.querySelector("#tabla_incidencias tbody");
         var fila = document.createElement("tr");
 
         var celda = document.createElement("td");
@@ -279,6 +289,67 @@ function crear_incidencia() {
         }).catch(e => {
             console.log(e);
         });
+}
+
+async function listar_usuarios() {
+    console.log("Ha pulsado el icono ADMIN");
+    // Listar incidencias
+    listado.style.display = 'none';//Oculta el listado de incidencias
+    usuarios.style.display = 'block';//Muestra el listado de usuarios
+    var datos = [];
+    const mi_token = "Bearer " + jwt.token;
+    try {
+        let response = await fetch('http://localhost:8080/usuario/listar', {
+            method: 'GET',
+            headers: {
+                "Authorization": mi_token // token
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        let data = await response.json();
+        datos = data;
+        console.log(datos);
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+    datos.reverse();//Se ponen los usuarios más recientes al principio de la tabla
+    //Se crea la tabla de usuarios
+    var tbody = document.querySelector("#tabla_usuarios tbody");
+    tbody.innerHTML = ""//Se borran los datos de la tabla
+    for (var n = 0; n < datos.length; n++) {
+
+        var newline_tabla = document.querySelector("#tabla_usuarios tbody");
+        var fila = document.createElement("tr");
+
+        var celda = document.createElement("td");
+        celda.innerText = datos[n].id;
+        fila.appendChild(celda);
+
+        var celda = document.createElement("td");
+        celda.innerText = datos[n].country;
+        fila.appendChild(celda);
+
+        var celda = document.createElement("td");
+        celda.innerText = datos[n].firstname;
+        fila.appendChild(celda);
+
+        var celda = document.createElement("td");
+        celda.innerText = datos[n].lastname;
+        fila.appendChild(celda);
+
+        var celda = document.createElement("td");
+        celda.innerText = datos[n].role;
+        fila.appendChild(celda);
+
+        var celda = document.createElement("td");
+        celda.innerText = datos[n].username;
+        fila.appendChild(celda);
+
+        newline_tabla.appendChild(fila);
+    }
+    usuarios.style.display = 'block';//Muestra el listado de usuarios
 }
 
 

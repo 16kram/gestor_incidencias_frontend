@@ -8,15 +8,25 @@
     /*Oculta el listado de incidencias*/
 }
 
-#tabla_incidencias {
+#tabla_incidencias,
+#tabla_usuarios {
     text-align: center;
     /*Centramos el texto*/
+}
+
+#usuarios {
+    display: none;
+}
+
+#icono_administrador,
+#icono_incidencias {
+    display: none;
 }
 
 .contenedor {
     width: 100%;
     /* Ancho del espacio */
-    height: 40vh;
+    height: 38vh;
     /* Altura del espacio */
     padding: 10px;
     /* Espacio interno */
