@@ -1,6 +1,7 @@
 const ID = 0;//Columna 'id' de la tabla
 const ESTADO = 9;//Columna 'estado' de la tabla
 var usuario, clave, jwt;
+var solicitante_rellenar;
 
 //Iniciar aplicación
 function iniciar() {
@@ -33,6 +34,10 @@ function iniciar() {
     var departamento = document.getElementById("departamento");
     var nueva_incidencia = document.getElementById("nueva_incidencia");
     nueva_incidencia.addEventListener("click", crear_incidencia);
+
+    //Añadir usuarios
+    var nuevo_usuario = document.getElementById("nuevo_usuario");
+    nuevo_usuario.addEventListener("click", crear_usuario);
 
     //Iconos de la barra de navegación
     var icono_administrador = document.getElementById("icono_administrador");
@@ -71,6 +76,7 @@ function boton_login() {
             icono_incidencias.style.display = 'block';//Se muestra el icono de listado de incidencias
             icono_administrador.style.display = 'block';//Se muestra eñ icono de administrador
             listar_incidencias();
+            inserta_solicitante();//Inserta en el campo de crear incidencias el solicitante
         }).catch(e => {
             console.log(e);
         });
@@ -163,6 +169,7 @@ async function listar_incidencias() {
         newline_tabla.appendChild(fila);
     }
     listado.style.display = 'block';//Muestra el listado de incidencias
+    nombre_usuario.innerHTML = solicitante_rellenar;//Muestra el nombre del usuario en la barra de navegación
 }
 
 
@@ -256,7 +263,7 @@ function crear_incidencia() {
     console.log("Solicitante=" + solicitante.value);
     console.log("Oficina=" + oficina.value);
     var incidencia = {
-        solicitante: solicitante.value,
+        solicitante: solicitante_rellenar,
         oficina: oficina.value,
         servicio: servicio.value,
         descripcion: descripcion.value,
@@ -279,8 +286,7 @@ function crear_incidencia() {
             if (!data.ok) {
                 throw Error(data.status);
             }
-            solicitante.value = "";//Se borran los campos de nueva incidencia
-            descripcion.value = "";
+            descripcion.value = "";//Se borran los campos de nueva incidencia
             comentarios.value = "";
             departamento.value = "";
             ubicacion.value = "";
@@ -289,6 +295,30 @@ function crear_incidencia() {
         }).catch(e => {
             console.log(e);
         });
+}
+
+//Añadimos el solicitante para crear una incidencia
+async function inserta_solicitante() {
+    const mi_token = "Bearer " + jwt.token;
+    try {
+        let response = await fetch('http://localhost:8080/usuario/nombreapellidos/' + usuario.value, {
+            method: 'GET',
+            headers: {
+                "Authorization": mi_token, // token
+                "Content-Type": "application/json"
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        let data = await response.text();
+        solicitante_rellenar = data;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        console.error(error.stack); // Para más detalles del error
+    }
+    console.log(solicitante_rellenar);
+    solicitante.innerText = solicitante_rellenar;
 }
 
 async function listar_usuarios() {
@@ -340,16 +370,59 @@ async function listar_usuarios() {
         fila.appendChild(celda);
 
         var celda = document.createElement("td");
-        celda.innerText = datos[n].role;
+        celda.innerText = datos[n].username;
         fila.appendChild(celda);
 
         var celda = document.createElement("td");
-        celda.innerText = datos[n].username;
+        celda.innerText = datos[n].role;
         fila.appendChild(celda);
 
         newline_tabla.appendChild(fila);
     }
     usuarios.style.display = 'block';//Muestra el listado de usuarios
+}
+
+//Crear usuario
+function crear_usuario() {
+    console.log("Nuevo usuario");
+    console.log("Oficina=" + oficina.value);
+    console.log("Nombre=" + firstname.value);
+    console.log("Apellidos=" + lastname.value);
+    console.log("Nombre de usuario=" + username.value);
+    console.log("Contraseña=" + password.value);
+    console.log("rol=" + role.value);
+    var usuario = {
+        country: country.value,
+        firstname: firstname.value,
+        lastname: lastname.value,
+        role: role.value,
+        username: username.value,
+        password: password.value
+    };
+    const mi_token = "Bearer " + jwt.token;
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "Authorization": mi_token, // token,
+        },
+        body: JSON.stringify(usuario),
+    };
+    fetch('http://localhost:8080/usuario/alta', options)
+        .then(data => {
+            if (!data.ok) {
+                throw Error(data.status);
+            }
+            country.value = "";//Se borran los campos del nuevo usuario
+            firstname.value = "";
+            lastname.value = "";
+            username.value = "";
+            password.value = "";
+            listar_usuarios();//Se listan los usuarios
+        }).then(response => {
+        }).catch(e => {
+            console.log(e);
+        });
 }
 
 

@@ -18,11 +18,14 @@
 <body>
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
-           
+
             <a class="navbar-brand">Control de incidencias del departamento de mantenimiento</a>
             <div class="d-flex align-items-center mx-auto">
-             <img src="img/icono_admin.png" alt="Icono" width="30" height="30" id="icono_administrador" data-toogle="tooltip" data-placament="top" title="Administrador">
-             <img src="img/icono_listado_incidencias.png" alt="Icono" width="30" height="30" id="icono_incidencias" data-toogle="tooltip" data-placament="top" title="Listado de incidencias">
+                <img src="img/icono_admin.png" alt="Icono" width="30" height="30" id="icono_administrador"
+                    data-toogle="tooltip" data-placament="top" title="Administrador">
+                <img src="img/icono_listado_incidencias.png" alt="Icono" width="30" height="30" id="icono_incidencias"
+                    data-toogle="tooltip" data-placament="top" title="Listado de incidencias">
+                <label id="nombre_usuario"></label>
             </div>
             <form class="d-flex ms-auto">
                 <span id="en_linea" class="badge rounded-pill text-bg-success">En línea</span>
@@ -63,7 +66,7 @@
                 <form>
                     <div class="mb-3">
                         <label class="form-label">Solicitante</label>
-                        <input type="text" class="form-control" id="solicitante">
+                        <textarea class="form-control" id="solicitante" rows="1" readonly>/</textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Oficina</label>
@@ -146,21 +149,62 @@
     </div>
 
     <div id="usuarios">
-    <h5>LISTADO DE USUARIOS</h5>
-    <div class="contenedor">
-        <table id="tabla_usuarios" border="1" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>id</th>
-                    <th>Ciudad</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Rol</th>
-                    <th>Nombre de usuario</th>
-                </tr>
-            </thead>
-            <tbody></tbody> <!--Aquí se añaden las filas nuevas-->
-        </table>
+        <h5>LISTADO DE USUARIOS</h5>
+        <div class="contenedor">
+            <table id="tabla_usuarios" border="1" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Oficina</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Nombre de usuario</th>
+                        <th>Rol</th>
+                    </tr>
+                </thead>
+                <tbody></tbody> <!--Aquí se añaden las filas nuevas-->
+            </table>
+        </div>
+
+        <div id="crear_usuario_visible">
+            <h5>CREAR USUARIO</h5>
+            <div class="contenedor">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Oficina</label>
+                        <select id="country" class="form-control">
+                            <option value="Barcelona">Barcelona</option>
+                            <option value="Madrid">Madrid</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="firstname"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="lastname"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de usuario</label>
+                        <input type="text" class="form-control" id="username"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select id="role" class="form-control">
+                            <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                            <option value="ROLE_USER">ROLE_USER</option>
+                            <option value="ROLE_MAINTENANCE">ROLE_MAINTENANCE</option>
+                        </select>
+                    </div>
+                </form>
+                <button id="nuevo_usuario" class="btn btn-primary">Nuevo usuario</button>
+            </div>
+        </div>
     </div>
     </div>
 
