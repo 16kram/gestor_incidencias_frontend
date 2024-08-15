@@ -1,5 +1,6 @@
-const ID = 0;//Columna 'id' de la tabla
-const ESTADO = 9;//Columna 'estado' de la tabla
+const ID = 0;//Columna 'id' de la tabla incidencias y usuarios
+const ESTADO = 9;//Columna 'estado' de la tabla incidencias
+const BORRAR_USUARIO = 6;//Columna 'borrar usuario' de la tabla usuarios
 var usuario, clave, jwt;
 var solicitante_rellenar;
 var nombre_de_usuario;//Nombre del usuario para mostrar en la barra de navegación
@@ -16,13 +17,13 @@ function iniciar() {
     usuario = document.getElementById("usuario");
     clave = document.getElementById("clave");
 
-    /*//Admin
-    var boton_administrador = document.getElementById("boton_admin");
-    boton_administrador.addEventListener("click", boton_admin);*/
-
     //Tabla de incidencias
     var tabla_incidencias = document.getElementById("tabla_incidencias");
     tabla_incidencias.addEventListener("click", seleccion_incidencia);
+
+    //Tabla de usuarios
+    var tabla_usuarios = document.getElementById("tabla_usuarios");
+    tabla_usuarios.addEventListener("click", eliminar_usuario);
 
     //Añadir incidencias
     var solicitante = document.getElementById("solicitante");
@@ -113,7 +114,6 @@ async function listar_incidencias() {
     console.log("botón listar incidencias");
     usuarios.style.display = 'none';//Oculta el listado de usuarios 
     listado.style.display = 'block';//Muestra el listado de incidencias
-
     var datos = [];
     const mi_token = "Bearer " + jwt.token;
     try {
@@ -191,7 +191,6 @@ async function listar_incidencias() {
                 celda.style.color = "red";
                 break;
         }
-
         newline_tabla.appendChild(fila);
     }
     listado.style.display = 'block';//Muestra el listado de incidencias
@@ -409,6 +408,17 @@ async function listar_usuarios() {
         celda.innerText = datos[n].role;
         fila.appendChild(celda);
 
+        var celda = document.createElement("td");
+        var imagen = document.createElement("img");
+        imagen.src = "img/icono_borrar_usuario.png";
+        imagen.alt = "Imagen eliminar usuario";
+        imagen.width = 30;
+        imagen.height = 30;
+        imagen.id = "imagen_" + n;//Asignamos un id único a cada imagen de 'eliminar usuario'
+        imagen.dataset.userId = n; // Se añade el atributo data-user-id para almacenar el ID del usuario
+        celda.appendChild(imagen);
+        fila.appendChild(celda);
+
         newline_tabla.appendChild(fila);
     }
     usuarios.style.display = 'block';//Muestra el listado de usuarios
@@ -543,6 +553,42 @@ function cerrar_mensaje_advertencia() {
     console.log("Cerrar advertencia");
     document.getElementById("advertencia").style.display = "none";
     document.getElementById("advertencia_autenticacion").style.display = "none";
+}
+
+//Eliminar usuario
+async function eliminar_usuario(event) {
+    console.log("ELIMINAR USUARIO");
+    var target = event.target;
+    if (target.tagName === "IMG") {
+        // Encontramos la fila que contiene la imagen clicada
+        var fila = target.closest("tr"); // Subimos hasta la fila
+        if (fila) {
+            var id = fila.children[0].innerText; // Obtenemos el ID de la primera columna
+            console.log("id del usuario a eliminar=" + id);
+            // Eliminamos el usuario
+            var datos = [];
+            const mi_token = "Bearer " + jwt.token;
+            try {
+                let response = await fetch('http://localhost:8080/usuario/bajaporid/' + id, {
+                    method: 'DELETE',
+                    headers: {
+                        "Authorization": mi_token, // token
+                        "Content-Type": "application/json"
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                let data = await response.text();
+                datos = data;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                console.error(error.stack); // Para más detalles del error
+            }
+            console.log(datos);
+            listar_usuarios();
+        }
+    }
 }
 
 window.addEventListener("load", iniciar);
