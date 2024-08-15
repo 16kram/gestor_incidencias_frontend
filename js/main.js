@@ -2,6 +2,7 @@ const ID = 0;//Columna 'id' de la tabla
 const ESTADO = 9;//Columna 'estado' de la tabla
 var usuario, clave, jwt;
 var solicitante_rellenar;
+var nombre_de_usuario;//Nombre del usuario para mostrar en la barra de navegación
 
 //Iniciar aplicación
 function iniciar() {
@@ -34,16 +35,33 @@ function iniciar() {
     var departamento = document.getElementById("departamento");
     var nueva_incidencia = document.getElementById("nueva_incidencia");
     nueva_incidencia.addEventListener("click", crear_incidencia);
+    var validar_incidencia = document.getElementById("crear_incidencia_visible");
+    validar_incidencia.addEventListener("input", validacion_incidencia);
 
     //Añadir usuarios
     var nuevo_usuario = document.getElementById("nuevo_usuario");
     nuevo_usuario.addEventListener("click", crear_usuario);
+    var validar_usuario = document.getElementById("crear_usuario_visible");
+    validar_usuario.addEventListener("input", validacion_usuario);
 
     //Iconos de la barra de navegación
     var icono_administrador = document.getElementById("icono_administrador");
     icono_administrador.addEventListener("click", listar_usuarios);
     var icono_listado_incidencias = document.getElementById("icono_incidencias");
     icono_listado_incidencias.addEventListener("click", listar_incidencias);
+
+    //Mensaje de advertencia por campos del formulario no rellenados
+    var cerrar_advertencia = document.getElementById("boton_cerrar_advertencia");
+    cerrar_advertencia.addEventListener("click", cerrar_mensaje_advertencia);
+    var x_cerrar_advertencia = document.getElementById("x_cerrar_advertencia");
+    x_cerrar_advertencia.addEventListener("click", cerrar_mensaje_advertencia);
+
+    //Mensaje de advertencia de fallo de autenticación
+    var cerrar_advertencia_autenticacion = document.getElementById("boton_cerrar_advertencia_autenticacion");
+    cerrar_advertencia_autenticacion.addEventListener("click", cerrar_mensaje_advertencia);
+    var x_cerrar_advertencia_autenticacion = document.getElementById("x_cerrar_advertencia_autenticacion");
+    x_cerrar_advertencia_autenticacion.addEventListener("click", cerrar_mensaje_advertencia);
+
 }
 
 //Autenticarse
@@ -66,6 +84,11 @@ function boton_login() {
         .then(data => {
             if (!data.ok) {
                 en_linea.style.display = 'none';//Se oculta 'en línea'
+                document.getElementById("advertencia_autenticacion").style.display = "block";
+                var sonido_advertencia = new Audio("audio/aviso.mp3");
+                sonido_advertencia.play();
+                usuario.value = "";
+                clave.value = "";
                 throw Error(data.status);
             }
             return data.json();
@@ -74,9 +97,12 @@ function boton_login() {
             console.log(jwt.token);
             en_linea.style.display = 'inline';//Se muestra 'en línea'
             icono_incidencias.style.display = 'block';//Se muestra el icono de listado de incidencias
-            icono_administrador.style.display = 'block';//Se muestra eñ icono de administrador
+            icono_administrador.style.display = 'block';//Se muestra el icono de administrador
+            nombre_de_usuario = usuario.value;
             listar_incidencias();
             inserta_solicitante();//Inserta en el campo de crear incidencias el solicitante
+            usuario.value = "";
+            clave.value = "";
         }).catch(e => {
             console.log(e);
         });
@@ -259,6 +285,12 @@ async function seleccion_incidencia(event) {
 
 //Crear incidencia
 function crear_incidencia() {
+    if (!validacion_incidencia()) {
+        document.getElementById("advertencia").style.display = "block";
+        var sonido_advertencia = new Audio("audio/aviso.mp3");
+        sonido_advertencia.play();
+        return;
+    }
     console.log("Nueva incidencia");
     console.log("Solicitante=" + solicitante.value);
     console.log("Oficina=" + oficina.value);
@@ -301,7 +333,7 @@ function crear_incidencia() {
 async function inserta_solicitante() {
     const mi_token = "Bearer " + jwt.token;
     try {
-        let response = await fetch('http://localhost:8080/usuario/nombreapellidos/' + usuario.value, {
+        let response = await fetch('http://localhost:8080/usuario/nombreapellidos/' + nombre_de_usuario, {
             method: 'GET',
             headers: {
                 "Authorization": mi_token, // token
@@ -384,6 +416,12 @@ async function listar_usuarios() {
 
 //Crear usuario
 function crear_usuario() {
+    if (!validacion_usuario()) {
+        document.getElementById("advertencia").style.display = "block";
+        var sonido_advertencia = new Audio("audio/aviso.mp3");
+        sonido_advertencia.play();
+        return;
+    }
     console.log("Nuevo usuario");
     console.log("Oficina=" + oficina.value);
     console.log("Nombre=" + firstname.value);
@@ -425,5 +463,86 @@ function crear_usuario() {
         });
 }
 
+//Validacion campos del formulario crear usuarios
+function validacion_usuario() {
+    console.log("validación");
+    var ok = true;
+    if (firstname.value == "") {
+        firstname.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        firstname.style.background = "#FFFFFF";
+    }
+    if (lastname.value == "") {
+        lastname.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        lastname.style.background = "#FFFFFF";
+    }
+    if (username.value == "") {
+        username.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        username.style.background = "#FFFFFF";
+    }
+    if (password.value == "") {
+        password.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        password.style.background = "#FFFFFF";
+    }
+    return ok;
+}
+
+
+//Validacion de campos del formulario crear usuarios
+function validacion_usuario() {
+    console.log("validación");
+    var ok = true;
+    if (firstname.value == "") {
+        firstname.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        firstname.style.background = "#FFFFFF";
+    }
+    if (lastname.value == "") {
+        lastname.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        lastname.style.background = "#FFFFFF";
+    }
+    if (username.value == "") {
+        username.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        username.style.background = "#FFFFFF";
+    }
+    if (password.value == "") {
+        password.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        password.style.background = "#FFFFFF";
+    }
+    return ok;
+}
+
+//Validacion de campos del formulario crear incidencia
+function validacion_incidencia() {
+    console.log("validación");
+    var ok = true;
+    if (descripcion.value == "") {
+        descripcion.style.background = "#FFDDDD";
+        ok = false;
+    } else {
+        descripcion.style.background = "#FFFFFF";
+    }
+    return ok;
+}
+
+function cerrar_mensaje_advertencia() {
+    console.log("Cerrar advertencia");
+    document.getElementById("advertencia").style.display = "none";
+    document.getElementById("advertencia_autenticacion").style.display = "none";
+}
 
 window.addEventListener("load", iniciar);
