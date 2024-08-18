@@ -4,6 +4,7 @@ const BORRAR_USUARIO = 6;//Columna 'borrar usuario' de la tabla usuarios
 var usuario, clave, jwt;
 var solicitante_rellenar;
 var nombre_de_usuario;//Nombre del usuario para mostrar en la barra de navegación
+var rol_usuario;
 
 //Iniciar aplicación
 function iniciar() {
@@ -23,7 +24,7 @@ function iniciar() {
 
     //Tabla de usuarios
     var tabla_usuarios = document.getElementById("tabla_usuarios");
-    tabla_usuarios.addEventListener("click", eliminar_usuario);
+    tabla_usuarios.addEventListener("click", desea_eliminar_usuario);
 
     //Añadir incidencias
     var solicitante = document.getElementById("solicitante");
@@ -63,6 +64,12 @@ function iniciar() {
     var x_cerrar_advertencia_autenticacion = document.getElementById("x_cerrar_advertencia_autenticacion");
     x_cerrar_advertencia_autenticacion.addEventListener("click", cerrar_mensaje_advertencia);
 
+    //Mensaje de advertencia de que el usuario ya existe
+    var cerrar_advertencia_usuario_existe = document.getElementById("boton_cerrar_advertencia_usuario_existe");
+    cerrar_advertencia_usuario_existe.addEventListener("click", cerrar_mensaje_advertencia);
+    var x_cerrar_advertencia_usuario_existe = document.getElementById("x_cerrar_advertencia_usuario_existe");
+    x_cerrar_advertencia_usuario_existe.addEventListener("click", cerrar_mensaje_advertencia);
+
 }
 
 //Autenticarse
@@ -98,7 +105,6 @@ function boton_login() {
             console.log(jwt.token);
             en_linea.style.display = 'inline';//Se muestra 'en línea'
             icono_incidencias.style.display = 'block';//Se muestra el icono de listado de incidencias
-            icono_administrador.style.display = 'block';//Se muestra el icono de administrador
             nombre_de_usuario = usuario.value;
             listar_incidencias();
             inserta_solicitante();//Inserta en el campo de crear incidencias el solicitante
@@ -194,7 +200,14 @@ async function listar_incidencias() {
         newline_tabla.appendChild(fila);
     }
     listado.style.display = 'block';//Muestra el listado de incidencias
-    nombre_usuario.innerHTML = solicitante_rellenar;//Muestra el nombre del usuario en la barra de navegación
+    nombre_de_usuario.innerHTML = solicitante_rellenar;//Muestra el nombre del usuario en la barra de navegación
+    rol_usuario = await obtiene_rol_usuario(nombre_de_usuario);
+    console.log("ROL=" + rol_usuario);
+    if (rol_usuario == "ROLE_ADMIN") {
+        icono_administrador.style.display = 'block';//Se muestra el icono de administrador
+    } else {
+        icono_administrador.style.display = 'none';//Se oculta el icono de administrador
+    }
 }
 
 
@@ -350,6 +363,7 @@ async function inserta_solicitante() {
     }
     console.log(solicitante_rellenar);
     solicitante.innerText = solicitante_rellenar;
+    nombre_usuario.innerHTML = solicitante_rellenar;//Muestra el nombre del usuario en la barra de navegación
 }
 
 async function listar_usuarios() {
@@ -461,14 +475,16 @@ function crear_usuario() {
             if (!data.ok) {
                 throw Error(data.status);
             }
-            country.value = "";//Se borran los campos del nuevo usuario
-            firstname.value = "";
+            firstname.value = "";//Se borran los campos del nuevo usuario
             lastname.value = "";
             username.value = "";
             password.value = "";
             listar_usuarios();//Se listan los usuarios
         }).then(response => {
         }).catch(e => {
+            document.getElementById("advertencia_usuario_existe").style.display = "block";
+            var sonido_advertencia = new Audio("audio/aviso.mp3");
+            sonido_advertencia.play();
             console.log(e);
         });
 }
@@ -553,42 +569,89 @@ function cerrar_mensaje_advertencia() {
     console.log("Cerrar advertencia");
     document.getElementById("advertencia").style.display = "none";
     document.getElementById("advertencia_autenticacion").style.display = "none";
+    document.getElementById("advertencia_usuario_existe").style.display = "none";
 }
 
-//Eliminar usuario
-async function eliminar_usuario(event) {
-    console.log("ELIMINAR USUARIO");
+
+//Preguntar si desea eliminar el usuario
+function desea_eliminar_usuario(event) {
     var target = event.target;
     if (target.tagName === "IMG") {
         // Encontramos la fila que contiene la imagen clicada
         var fila = target.closest("tr"); // Subimos hasta la fila
         if (fila) {
-            var id = fila.children[0].innerText; // Obtenemos el ID de la primera columna
-            console.log("id del usuario a eliminar=" + id);
-            // Eliminamos el usuario
-            var datos = [];
-            const mi_token = "Bearer " + jwt.token;
-            try {
-                let response = await fetch('http://localhost:8080/usuario/bajaporid/' + id, {
-                    method: 'DELETE',
-                    headers: {
-                        "Authorization": mi_token, // token
-                        "Content-Type": "application/json"
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok: ' + response.statusText);
-                }
-                let data = await response.text();
-                datos = data;
-            } catch (error) {
-                console.error('Fetch error:', error);
-                console.error(error.stack); // Para más detalles del error
-            }
-            console.log(datos);
-            listar_usuarios();
+            var id_eliminar = fila.children[0].innerText; // Obtenemos el ID de la primera columna
+            console.log("id del usuario a eliminar=" + id_eliminar);
+            //Mostramos mensaje de advertencia
+            document.getElementById("advertencia_eliminar_usuario").style.display = "block";
+            var sonido_advertencia = new Audio("audio/aviso.mp3");
+            sonido_advertencia.play();
+            document.getElementById("boton_advertencia_eliminar_usuario_si").addEventListener("click", function () {
+                eliminar_usuario(id_eliminar);
+            }, { once: true });
+
+            document.getElementById("x_cerrar_advertencia_eliminar_usuario").addEventListener("click", function () {
+                document.getElementById("advertencia_eliminar_usuario").style.display = "none";//Ocultamos mensaje advertencia
+                return;
+            }, { once: true });
+            document.getElementById("boton_advertencia_eliminar_usuario_no").addEventListener("click", function () {
+                document.getElementById("advertencia_eliminar_usuario").style.display = "none";//Ocultamos mensaje advertencia
+                return;
+            }, { once: true });
         }
     }
+}
+
+//Eliminar usuario
+async function eliminar_usuario(id_eliminar) {
+    console.log("eliminamos el usuario");
+    var datos = [];
+    const mi_token = "Bearer " + jwt.token;
+    try {
+        console.log("ID dentro de=" + id_eliminar);
+        let response = await fetch('http://localhost:8080/usuario/bajaporid/' + id_eliminar, {
+            method: 'DELETE',
+            headers: {
+                "Authorization": mi_token, // token
+                "Content-Type": "application/json"
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        let data = await response.text();
+        datos = data;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        console.error(error.stack); // Para más detalles del error
+    }
+    console.log(datos);
+    document.getElementById("advertencia_eliminar_usuario").style.display = "none";//Ocultamos mensaje advertencia
+    listar_usuarios();
+}
+
+//Obtiene el rol de un usuario
+async function obtiene_rol_usuario(nombre_de_usuario) {
+    const mi_token = "Bearer " + jwt.token;
+    try {
+        let response = await fetch('http://localhost:8080/usuario/rolusuario/' + nombre_de_usuario, {
+            method: 'GET',
+            headers: {
+                "Authorization": mi_token, // token
+                "Content-Type": "application/json"
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        let data = await response.text();
+        rol_usuario = data;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        console.error(error.stack); // Para más detalles del error
+    }
+    console.log(rol_usuario);
+    return rol_usuario
 }
 
 window.addEventListener("load", iniciar);

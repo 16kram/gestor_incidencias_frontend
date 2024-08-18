@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <!-- Modal de Advertencia Error autenticación-->
+    <!-- Modal de Advertencia de Error de autenticación-->
     <div class="modal" id="advertencia_autenticacion" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -78,6 +78,52 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal"
                         id="boton_cerrar_advertencia_autenticacion">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Advertencia al crear un usuario existente-->
+    <div class="modal" id="advertencia_usuario_existe" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Advertencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"
+                        id="x_cerrar_advertencia_usuario_existe">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    El usuario ya existe
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="boton_cerrar_advertencia_usuario_existe">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de advertencia para eliminar un usuario -->
+    <div class="modal" id="advertencia_eliminar_usuario" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Advertencia</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"
+                        id="x_cerrar_advertencia_eliminar_usuario">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Desea eliminar el usuario?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="boton_advertencia_eliminar_usuario_si">Sí</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="boton_advertencia_eliminar_usuario_no">No</button>
                 </div>
             </div>
         </div>
@@ -241,9 +287,9 @@
                     <div class="mb-3">
                         <label class="form-label">Rol</label>
                         <select id="role" class="form-control">
-                            <option value="ROLE_ADMIN">ROLE_ADMIN</option>
                             <option value="ROLE_USER">ROLE_USER</option>
                             <option value="ROLE_MAINTENANCE">ROLE_MAINTENANCE</option>
+                            <option value="ROLE_ADMIN">ROLE_ADMIN</option>
                         </select>
                     </div>
                 </form>
