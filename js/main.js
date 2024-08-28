@@ -4,6 +4,7 @@ const BORRAR_USUARIO = 6;//Columna 'borrar usuario' de la tabla usuarios
 var usuario, clave, jwt;
 var solicitante_rellenar;
 var nombre_de_usuario;//Nombre del usuario para mostrar en la barra de navegación
+var id_nombre_usuario;//Nombre de usuario para el listado de incidencias
 var rol_usuario;
 
 //Iniciar aplicación
@@ -106,6 +107,7 @@ function boton_login() {
             en_linea.style.display = 'inline';//Se muestra 'en línea'
             icono_incidencias.style.display = 'block';//Se muestra el icono de listado de incidencias
             nombre_de_usuario = usuario.value;
+            id_nombre_usuario = usuario.value;//Nombre de usuario que se utiliza como id para listar las incidencias
             listar_incidencias();
             inserta_solicitante();//Inserta en el campo de crear incidencias el solicitante
             usuario.value = "";
@@ -117,13 +119,13 @@ function boton_login() {
 
 // Listar incidencias
 async function listar_incidencias() {
-    console.log("botón listar incidencias");
+    console.log("Listar incidencias-->id_usuario=" + id_nombre_usuario);
     usuarios.style.display = 'none';//Oculta el listado de usuarios 
     listado.style.display = 'block';//Muestra el listado de incidencias
     var datos = [];
     const mi_token = "Bearer " + jwt.token;
     try {
-        let response = await fetch('http://localhost:8080/incidencias/listar', {
+        let response = await fetch('http://localhost:8080/incidencias/listar/' + id_nombre_usuario, {
             method: 'GET',
             headers: {
                 "Authorization": mi_token // token
@@ -303,6 +305,7 @@ function crear_incidencia() {
         sonido_advertencia.play();
         return;
     }
+    console.log("id_usuario=" + id_nombre_usuario);
     console.log("Nueva incidencia");
     console.log("Solicitante=" + solicitante.value);
     console.log("Oficina=" + oficina.value);
@@ -314,7 +317,8 @@ function crear_incidencia() {
         comentarios: comentarios.value,
         ubicacion: ubicacion.value,
         planta: planta.value,
-        departamento: departamento.value
+        departamento: departamento.value,
+        idUsuario: id_nombre_usuario
     };
     const mi_token = "Bearer " + jwt.token;
     const options = {
@@ -430,6 +434,7 @@ async function listar_usuarios() {
         imagen.height = 30;
         imagen.id = "imagen_" + n;//Asignamos un id único a cada imagen de 'eliminar usuario'
         imagen.dataset.userId = n; // Se añade el atributo data-user-id para almacenar el ID del usuario
+        imagen.title = "Borra el usuario";
         celda.appendChild(imagen);
         fila.appendChild(celda);
 
