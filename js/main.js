@@ -1,6 +1,7 @@
 const ID = 0;//Columna 'id' de la tabla incidencias y usuarios
 const ESTADO = 9;//Columna 'estado' de la tabla incidencias
 const BORRAR_USUARIO = 6;//Columna 'borrar usuario' de la tabla usuarios
+const DOMINIO = "https://estebanpa.ddns.net:8443";//Nombre de dominio del servidor
 var usuario, clave, jwt;
 var solicitante_rellenar;
 var nombre_de_usuario;//Nombre del usuario para mostrar en la barra de navegación
@@ -89,7 +90,7 @@ function boton_login() {
         },
         body: JSON.stringify(login),
     };
-    fetch('http://localhost:8080/usuario/login', options)
+    fetch(DOMINIO + '/usuario/login', options)
         .then(data => {
             if (!data.ok) {
                 en_linea.style.display = 'none';//Se oculta 'en línea'
@@ -125,7 +126,7 @@ async function listar_incidencias() {
     var datos = [];
     const mi_token = "Bearer " + jwt.token;
     try {
-        let response = await fetch('http://localhost:8080/incidencias/listar/' + id_nombre_usuario, {
+        let response = await fetch(DOMINIO + '/incidencias/listar/' + id_nombre_usuario, {
             method: 'GET',
             headers: {
                 "Authorization": mi_token // token
@@ -219,7 +220,7 @@ async function boton_admin() {
     var datos = [];
     const mi_token = "Bearer " + jwt.token;
     try {
-        let response = await fetch('http://localhost:8080/usuario/admin', {
+        let response = await fetch(DOMINIO + '/usuario/admin', {
             method: 'GET',
             headers: {
                 "Authorization": mi_token, // token
@@ -252,7 +253,7 @@ async function seleccion_incidencia(event) {
             var datos = [];
             const mi_token = "Bearer " + jwt.token;
             try {
-                let response = await fetch('http://localhost:8080/incidencias/modificarestado/' + contenidoPrimeraCelda, {
+                let response = await fetch(DOMINIO + '/incidencias/modificarestado/' + contenidoPrimeraCelda, {
                     method: 'PUT',
                     headers: {
                         "Authorization": mi_token, // token
@@ -272,7 +273,7 @@ async function seleccion_incidencia(event) {
             //Se hace la petición obtenerEstado
             var datos = [];
             try {
-                let response = await fetch('http://localhost:8080/incidencias/obtenerestado/' + contenidoPrimeraCelda, {
+                let response = await fetch(DOMINIO + '/incidencias/obtenerestado/' + contenidoPrimeraCelda, {
                     method: 'GET',
                     headers: {
                         "Authorization": mi_token, // token
@@ -329,7 +330,7 @@ function crear_incidencia() {
         },
         body: JSON.stringify(incidencia),
     };
-    fetch('http://localhost:8080/incidencias/alta', options)
+    fetch(DOMINIO + '/incidencias/alta', options)
         .then(data => {
             if (!data.ok) {
                 throw Error(data.status);
@@ -349,7 +350,7 @@ function crear_incidencia() {
 async function inserta_solicitante() {
     const mi_token = "Bearer " + jwt.token;
     try {
-        let response = await fetch('http://localhost:8080/usuario/nombreapellidos/' + nombre_de_usuario, {
+        let response = await fetch(DOMINIO + '/usuario/nombreapellidos/' + nombre_de_usuario, {
             method: 'GET',
             headers: {
                 "Authorization": mi_token, // token
@@ -378,7 +379,7 @@ async function listar_usuarios() {
     var datos = [];
     const mi_token = "Bearer " + jwt.token;
     try {
-        let response = await fetch('http://localhost:8080/usuario/listar', {
+        let response = await fetch(DOMINIO + '/usuario/listar', {
             method: 'GET',
             headers: {
                 "Authorization": mi_token // token
@@ -475,7 +476,7 @@ function crear_usuario() {
         },
         body: JSON.stringify(usuario),
     };
-    fetch('http://localhost:8080/usuario/alta', options)
+    fetch(DOMINIO + '/usuario/alta', options)
         .then(data => {
             if (!data.ok) {
                 throw Error(data.status);
@@ -614,7 +615,7 @@ async function eliminar_usuario(id_eliminar) {
     const mi_token = "Bearer " + jwt.token;
     try {
         console.log("ID dentro de=" + id_eliminar);
-        let response = await fetch('http://localhost:8080/usuario/bajaporid/' + id_eliminar, {
+        let response = await fetch(DOMINIO + '/usuario/bajaporid/' + id_eliminar, {
             method: 'DELETE',
             headers: {
                 "Authorization": mi_token, // token
@@ -639,7 +640,7 @@ async function eliminar_usuario(id_eliminar) {
 async function obtiene_rol_usuario(nombre_de_usuario) {
     const mi_token = "Bearer " + jwt.token;
     try {
-        let response = await fetch('http://localhost:8080/usuario/rolusuario/' + nombre_de_usuario, {
+        let response = await fetch(DOMINIO + '/usuario/rolusuario/' + nombre_de_usuario, {
             method: 'GET',
             headers: {
                 "Authorization": mi_token, // token
