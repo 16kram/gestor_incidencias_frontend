@@ -6,8 +6,8 @@ Funciona en conjunto con el proyecto 'gestor_incidencias_backend', que maneja la
 
 
 Notas:</BR>
-Certificado y clave privada SSL para servidor Apache en Windows creados con Win-Acme.
-Certificado y clave privada SSL para servidor Apache en Raspbian creados con Certbot.
+Certificado y clave privada SSL para servidor Apache en Windows creados con Win-Acme.<BR>
+Certificado y clave privada SSL para servidor Apache en Raspbian creados con Certbot.<BR>
 Certificado y clave privada SSL para el servidor Tomcat de SpringBoot--> Se utilizan los archivos .pem creados para el Servidor Apache y se utiliza openSSL para convertirlos a un archivo .p12(PKCS12):</BR>
 openssl pkcs12 -export \
   -in estebanpa.ddns.net-crt.pem \
