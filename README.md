@@ -24,5 +24,3 @@ server.ssl.key-store=classpath:keystore.p12<BR>
 server.ssl.key-store-password=tu-contraseña<BR>
 server.ssl.key-store-type=PKCS12<BR>
 server.ssl.key-alias=estebanpa
-
-
