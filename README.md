@@ -17,7 +17,7 @@ openssl pkcs12 -export \
   -CAfile estebanpa.ddns.net-chain.pem \
   -caname root
 
-La contraseña para proteger el archivo PKCS12 que nos pide en el proceso de conversión, se utilizará en la configuración de SpringBoot.
+La contraseña para proteger el archivo PKCS12 que nos pide en el proceso de conversión, se utilizará en la configuración de SpringBoot.<BR>
 Se añade el archivo keystore.p12 en el directorio src/main/resources, y se añade en application.properties:<BR>
 server.port=8443<BR>
 server.ssl.key-store=classpath:keystore.p12<BR>
