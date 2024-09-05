@@ -19,10 +19,10 @@ openssl pkcs12 -export \
 
 La contraseña para proteger el archivo PKCS12 que nos pide en el proceso de conversión, se utilizará en la configuración de SpringBoot.
 Se añade el archivo keystore.p12 en el directorio src/main/resources, y se añade en application.properties:<BR>
-server.port=8443
-server.ssl.key-store=classpath:keystore.p12
-server.ssl.key-store-password=tu-contraseña
-server.ssl.key-store-type=PKCS12
+server.port=8443<BR>
+server.ssl.key-store=classpath:keystore.p12<BR>
+server.ssl.key-store-password=tu-contraseña<BR>
+server.ssl.key-store-type=PKCS12<BR>
 server.ssl.key-alias=estebanpa
 
 
